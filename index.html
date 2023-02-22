@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      height: 50px;
+      background-color: #2d4dff;
+      color: #fff;
+      padding: 0 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    header>div {
+      margin-right: auto;
+    }
+    main {
+      padding: 10px;
+    }
+    .ok-logo {
+      display: flex;
+      margin-top: 50px;
+      justify-content: center;
+      align-items: center;
+    }
+    .ok-logo>img {
+      width: 150px;
+      height: 150px;
+      border-radius: 100%;
+    }
+    .info {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+    }
+
+    /* caonimade css 这样写不行...因为css笨蛋只在同级用这个伪类选择器 */
+    tr>td:first-child {
+      font-weight: 1000;
+    }
+
+
+    .date {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      font-weight: 1000;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      background: -webkit-linear-gradient(#00a228, #67c07d);  
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;      
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      ＜ 返回
+    </div>
+    <div>
+      扫码结果详情
+    </div>
+  </header>
+  <main>
+    <div>
+      <div class="ok-logo">
+        <img src="ok.png" alt="ok">
+      </div>
+      <div class="info">
+        <table>
+            <tr id="college">
+              <td >学校:</td>
+              <td> </td>
+            </tr>
+            <tr id="school">
+              <td>学院:</td>
+              <td> </td>
+            </tr>
+            <tr id="major">
+              <td>专业:</td>
+              <td> </td>
+            </tr>
+            <tr id="class">
+              <td>班级:</td>
+              <td> </td>
+            </tr>
+            <tr id="name">
+              <td>姓名:</td>
+              <td> </td>
+            </tr>
+            <tr id="id-num">
+              <td>学号:</td>
+              <td> </td>
+            </tr>
+
+        </table>
+      </div>
+      <div class="date">
+         2023/2/6
+         下午2:51:37
+      </div>
+      </div>
+      <!-- use dialog to get info -->
+      <dialog>
+        <form method="dialog">
+          <p>信息可以保存，并在刷新页面后更新显示最后一次保存的信息</p>
+          <p>
+            <label>学校:
+              <input type="text" name="college">
+            </label>
+          </p>
+          <p>
+            <label>学院:
+              <input type="text" name="school">
+            </label>
+          </p>
+          <p>
+            <label>专业:
+              <input type="text" name="major">
+            </label>
+          </p>
+          <p>
+            <label>班级:
+              <input type="text" name="class">
+            </label>
+          </p>
+          <p>
+            <label>姓名:
+              <input type="text" name="name">
+            </label>
+          </p>
+          <p>
+            <label>学号:
+              <input type="text" name="id-num">
+            </label>
+          </p>
+          <menu>
+            <button type="submit" value="default">保存</button>
+            <button type="button" value="cancel" onclick="document.querySelector('dialog').close()">关闭</button>
+          </menu>
+        </form>
+      </dialog>
+  </main>
+  <script>
+    // 弹窗填入信息后保存到 loaclStorage
+    const dialog = document.querySelector('dialog');
+    const form = document.querySelector('form');
+    const college = document.querySelector('#college>td:nth-child(2)');
+    const school = document.querySelector('#school>td:nth-child(2)');
+    const major = document.querySelector('#major>td:nth-child(2)');
+    const class_ = document.querySelector('#class>td:nth-child(2)');
+    const name = document.querySelector('#name>td:nth-child(2)');
+    const id_num = document.querySelector('#id-num>td:nth-child(2)');
+    const data = {
+      college: '',
+      school: '',
+      major: '',
+      class: '',
+      name: '',
+      id_num: ''
+    }
+    dialog.showModal();
+
+    // 保存信息
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      data.college = form.elements.college.value;
+      data.school = form.elements.school.value;
+      data.major = form.elements.major.value;
+      data.class = form.elements.class.value;
+      data.name = form.elements.name.value;
+      data.id_num = form.elements['id-num'].value;
+      localStorage.setItem('data', JSON.stringify(data));
+      dialog.close();
+    });
+
+    // 读取信息替换默认
+
+    const data_ = JSON.parse(localStorage.getItem('data'));
+    college.innerHTML = data_.college;
+    school.innerHTML = data_.school;
+    major.innerHTML = data_.major;
+    class_.innerHTML = data_.class;
+    name.innerHTML = data_.name;
+    id_num.innerHTML = data_.id_num;
+
+
+
+    const date = new Date();
+    let ampm = date.getHours() >= 12 ? '下午' : '上午';
+    let hour = date.getHours() % 12;
+    let date_el = document.querySelector('.date');
+    date_el.innerHTML = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}<br>${ampm}${hour}:${date.getMinutes()}:${date.getSeconds()}`;
+  </script>
+</body>
+</html>
